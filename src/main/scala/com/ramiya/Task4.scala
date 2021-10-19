@@ -35,7 +35,7 @@ object Task4 {
             word.set(pattern.group(3))
             context.write(word, charlength)
           }
-          case None => println("jgftfy")
+          case None => println("error")
         }
       })
     }

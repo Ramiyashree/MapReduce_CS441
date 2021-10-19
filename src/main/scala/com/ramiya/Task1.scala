@@ -27,7 +27,7 @@ object Task1 {
 
       val keyValPattern: Regex = "(^\\d{2}:\\d{2}:\\d{2}\\.\\d{3})\\s\\[([^\\]]*)\\]\\s(WARN|INFO|DEBUG|ERROR)\\s+([A-Z][A-Za-z\\.]+)\\$\\s-\\s(.*)".r
       val formatter = DateTimeFormatter.ofPattern("HH:mm:ss.SSS")
-      val inject_pattern :Regex = "([a-c][e-g][0-3]|[A-Z][5-9][f-w]){5,15}".r
+      val inject_pattern : Regex = "[\\w]+".r
       val startTime = LocalTime.parse("13:02:53.641", formatter)
       val endTime = LocalTime.parse("13:02:53.767", formatter)
 
