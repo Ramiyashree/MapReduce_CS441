@@ -31,7 +31,7 @@ object Task2 {
             word.set(pattern.group(1).split(":")(0))
             context.write(word,one)
           }
-          case None => println("jgftfy")
+          case None => println("error")
         }
       })
 

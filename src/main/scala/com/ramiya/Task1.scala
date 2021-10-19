@@ -42,7 +42,7 @@ object Task1 {
                     context.write(word,one)
                   }
                 }
-                case None => println("jgftfy")
+                case None => println("error")
               }
             })
     }
