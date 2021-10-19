@@ -1,5 +1,6 @@
 package com.ramiya
 
+import com.typesafe.config.{Config, ConfigFactory}
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.{IntWritable, Text}
@@ -13,9 +14,15 @@ import scala.collection.JavaConverters._
 import scala.util.matching.Regex
 class Task4
 
-object Task4 {
-  class Task4Mapper extends Mapper[Object, Text, Text, IntWritable] {
+/*
+Task 4: To produce the number of characters in each log message for each log message type that contain the
+highest number of characters in the detected instances of the designated regex pattern.
+ */
 
+object Task4 {
+  val conf: Config = ConfigFactory.load("application.conf")
+
+  class Task4Mapper extends Mapper[Object, Text, Text, IntWritable] {
 
     val one = new IntWritable(1)
     val word = new Text()
@@ -24,8 +31,8 @@ object Task4 {
                      value: Text,
                      context: Mapper[Object, Text, Text, IntWritable]#Context): Unit = {
 
-      val keyValPattern: Regex = "(^\\d{2}:\\d{2}:\\d{2}\\.\\d{3})\\s\\[([^\\]]*)\\]\\s(WARN|INFO|DEBUG|ERROR)\\s+([A-Z][A-Za-z\\.]+)\\$\\s-\\s(.*)".r
-      val inject_pattern : Regex = "[\\w]+".r
+      val keyValPattern: Regex = conf.getString("configuration.regexPattern").r
+      val inject_pattern : Regex = conf.getString("configuration.injectedStringPattern").r
 
       val patternMatch =  keyValPattern.findFirstMatchIn(value.toString)
       patternMatch.toList.map((pattern) => {

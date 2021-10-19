@@ -1,5 +1,6 @@
 package com.ramiya
 
+import com.typesafe.config.{Config, ConfigFactory}
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.{IntWritable, Text}
@@ -13,7 +14,13 @@ import scala.collection.JavaConverters._
 import scala.util.matching.Regex
 class Task3
 
+/*Task 3: To find the count of generated log messages for each message type.
+*/
+
 object Task3 {
+
+  val conf: Config = ConfigFactory.load("application.conf")
+
   class Task3Mapper extends Mapper[Object, Text, Text, IntWritable] {
 
     val one = new IntWritable(1)
@@ -23,11 +30,11 @@ object Task3 {
                      value: Text,
                      context: Mapper[Object, Text, Text, IntWritable]#Context): Unit = {
 
-      val keyValPattern: Regex = "^\\d{2}:\\d{2}:\\d{2}\\.\\d{3}\\s\\[([^\\]]*)\\]\\s(WARN|INFO|DEBUG|ERROR)\\s+([A-Z][A-Za-z\\.]+)\\$\\s-\\s(.*)".r
+      val keyValPattern: Regex = conf.getString("configuration.regexPattern").r
 
             val p = keyValPattern.findAllMatchIn(value.toString)
             p.toList.map((pattern) => {
-              word.set(pattern.group(2))
+              word.set(pattern.group(3))
               context.write(word,one)
             })
     }
@@ -41,17 +48,4 @@ object Task3 {
     }
   }
 
-//  def main(args: Array[String]): Unit = {
-//    val configuration = new Configuration()
-//    val job = Job.getInstance(configuration, "word count")
-//    job.setJarByClass(this.getClass)
-//    job.setMapperClass    (classOf[Task3Mapper])
-//    job.setCombinerClass(classOf[Task3Reducer])
-//    job.setReducerClass(classOf[Task3Reducer])
-//    job.setOutputKeyClass(classOf[Text])
-//    job.setOutputValueClass(classOf[IntWritable])
-//    FileInputFormat.addInputPath(job, new Path(args(0)))
-//    FileOutputFormat.setOutputPath(job, new Path(args(1)))
-//    System.exit(if(job.waitForCompletion(true)) 0 else 1)
-//  }
 }

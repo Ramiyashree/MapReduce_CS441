@@ -27,14 +27,8 @@ def main(args: Array[String]): Unit = {
   val startTime = System.nanoTime
   logger.info("--- Starting AllMapReduce ---")
 
-  //val startTags = conf.getString("configuration.startTags")
-  //val endTags = conf.getString("configuration.endTags")
 
   val configure: Configuration = new Configuration()
-
-  //Set start and end tags for XmlInputFormat
-  //configure.set(MyXmlInputFormat.START_TAGS, startTags)
-  //configure.set(MyXmlInputFormat.END_TAGS, endTags)
 
   //Format as CSV output
   configure.set("mapred.textoutputformat.separator", ",")
@@ -45,9 +39,8 @@ def main(args: Array[String]): Unit = {
   val job3Name = conf.getString("configuration.job3")
   val job4Name = conf.getString("configuration.job4")
 
-
   /**
-   * Job 1 - spreadsheet or an CSV file that shows top ten published authors at each venue
+   * Job 1
    */
   val job1: Job = Job.getInstance(configure, job1Name)
   job1.setJarByClass(classOf[Task1])
@@ -59,9 +52,10 @@ def main(args: Array[String]): Unit = {
   job1.setOutputFormatClass(classOf[TextOutputFormat[Text, IntWritable]])
   FileInputFormat.addInputPath(job1, new Path(inputFile))
   FileOutputFormat.setOutputPath(job1, new Path((outputFile + "/" + job1Name)))
+ // job1.waitForCompletion(true)
 
   /**
-   * Job 2 - list of authors who published without interruption for N consecutiveYears where 10 <= N
+   * Job 2
    */
   val job2: Job = Job.getInstance(configure, job2Name)
   job2.setJarByClass(classOf[Task2])
@@ -73,21 +67,23 @@ def main(args: Array[String]): Unit = {
 //  job2.setOutputFormatClass(classOf[TextOutputFormat[Text, IntWritable]])
   FileInputFormat.addInputPath(job2, new Path(inputFile))
   FileOutputFormat.setOutputPath(job2, new Path((outputFile + "/" + job2Name)))
-  if(job2.waitForCompletion(true)){
+  job2.waitForCompletion(true)
     val configuration1 = new Configuration
     val job2a = Job.getInstance(configuration1,"word count")
     job2a.setJarByClass(classOf[Task2])
     job2a.setMapperClass(classOf[Task2Mapper2])
     job2a.setReducerClass(classOf[Task2Reducer2])
+    job2a.setMapOutputKeyClass(classOf[IntWritable])
+    job2a.setMapOutputValueClass(classOf[Text])
     job2a.setOutputKeyClass(classOf[Text])
     job2a.setOutputValueClass(classOf[IntWritable]);
     FileInputFormat.addInputPath(job2a, new Path(outputFile + "/" + job2Name))
     FileOutputFormat.setOutputPath(job2a, new Path(outputFile + "/" + job2NameMR2))
-  }
+    job2a.waitForCompletion(true)
 
 
   /**
-   * Job 3 - List of publications that contains only one author
+   * Job 3
    */
   val job3: Job = Job.getInstance(configure, job3Name)
   job3.setJarByClass(classOf[Task3])
@@ -99,9 +95,10 @@ def main(args: Array[String]): Unit = {
   job3.setOutputFormatClass(classOf[TextOutputFormat[Text, IntWritable]])
   FileInputFormat.addInputPath(job3, new Path(inputFile))
   FileOutputFormat.setOutputPath(job3, new Path((outputFile + "/" + job3Name)))
+ // job3.waitForCompletion(true)
 
   /**
-   * Job 4 - List of publications for each venue that contain the highest number of authors for each of these venues
+   * Job 4
    */
   val job4: Job = Job.getInstance(configure, job4Name)
   job4.setJarByClass(classOf[Task4])
@@ -113,14 +110,17 @@ def main(args: Array[String]): Unit = {
   job4.setOutputFormatClass(classOf[TextOutputFormat[Text, IntWritable]])
   FileInputFormat.addInputPath(job4, new Path(inputFile))
   FileOutputFormat.setOutputPath(job4, new Path((outputFile + "/" + job4Name)))
+ // job4.waitForCompletion(true)
 
-  val verbose: Boolean = true
-  if (job1.waitForCompletion(verbose) && job2.waitForCompletion(verbose) && job3.waitForCompletion(verbose) && job4.waitForCompletion(verbose)) {
-    val endTime = System.nanoTime
-    val totalTime = endTime - startTime
-    logger.info("--- SUCCESSFULLY COMPLETED (Execution completed in: " + totalTime / 1_000_000_000 + " sec) ---")
-  } else {
-    logger.info("--- UNFORTUNATELY FAILED ---")
-  }
+
+
+//  val verbose: Boolean = true
+//  if (job1.waitForCompletion(verbose) && job2.waitForCompletion(verbose) && job2a.waitForCompletion(verbose) && job3.waitForCompletion(verbose) && job4.waitForCompletion(verbose)) {
+//    val endTime = System.nanoTime
+//    val totalTime = endTime - startTime
+//    logger.info("--- SUCCESSFULLY COMPLETED (Execution completed in: " + totalTime / 1_000_000_000 + " sec) ---")
+//  } else {
+//    logger.info("--- UNFORTUNATELY FAILED ---")
+//  }
 }
 }

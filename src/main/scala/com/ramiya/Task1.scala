@@ -1,5 +1,6 @@
 package com.ramiya
 
+import com.typesafe.config.{Config, ConfigFactory}
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.{IntWritable, Text}
@@ -15,7 +16,13 @@ import scala.collection.JavaConverters._
 import scala.util.matching.Regex
 class Task1
 
+/*Task 1: To find the count of generated log messages with injected regex pattern for each
+message type in a predefined time interval.
+ */
+
 object Task1 {
+  val conf: Config = ConfigFactory.load("application.conf")
+
   class Task1Mapper extends Mapper[Object, Text, Text, IntWritable] {
 
     val one = new IntWritable(1)
@@ -25,11 +32,12 @@ object Task1 {
                      value: Text,
                      context: Mapper[Object, Text, Text, IntWritable]#Context): Unit = {
 
-      val keyValPattern: Regex = "(^\\d{2}:\\d{2}:\\d{2}\\.\\d{3})\\s\\[([^\\]]*)\\]\\s(WARN|INFO|DEBUG|ERROR)\\s+([A-Z][A-Za-z\\.]+)\\$\\s-\\s(.*)".r
+      val keyValPattern: Regex = conf.getString("configuration.regexPattern").r
+      val inject_pattern : Regex = conf.getString("configuration.injectedStringPattern").r
+
       val formatter = DateTimeFormatter.ofPattern("HH:mm:ss.SSS")
-      val inject_pattern : Regex = "[\\w]+".r
-      val startTime = LocalTime.parse("13:02:53.641", formatter)
-      val endTime = LocalTime.parse("13:02:53.767", formatter)
+      val startTime = LocalTime.parse(conf.getString("configuration.startTime"), formatter)
+      val endTime = LocalTime.parse(conf.getString("configuration.endTime"), formatter)
 
       val patternMatch =  keyValPattern.findFirstMatchIn(value.toString)
             patternMatch.toList.map(x => {
@@ -37,12 +45,11 @@ object Task1 {
                 case Some(_) => {
                   val time = LocalTime.parse(x.group(1), formatter)
                   if(startTime.isBefore(time) && endTime.isAfter(time)){
-                    inject_pattern.findFirstMatchIn(x.group(5))
                     word.set(x.group(3))
                     context.write(word,one)
                   }
                 }
-                case None => println("error")
+                case None => println("Injected Regex Pattern is not matching the log message")
               }
             })
     }
@@ -55,18 +62,4 @@ object Task1 {
       context.write(key, new IntWritable(sum))
     }
   }
-
-//  def main(args: Array[String]): Unit = {
-//    val configuration = new Configuration()
-//    val job = Job.getInstance(configuration, "word count")
-//    job.setJarByClass(this.getClass)
-//    job.setMapperClass    (classOf[Task1Mapper])
-//    job.setCombinerClass(classOf[Task1Reducer])
-//    job.setReducerClass(classOf[Task1Reducer])
-//    job.setOutputKeyClass(classOf[Text])
-//    job.setOutputValueClass(classOf[IntWritable])
-//    FileInputFormat.addInputPath(job, new Path(args(0)))
-//    FileOutputFormat.setOutputPath(job, new Path(args(1)))
-//    System.exit(if(job.waitForCompletion(true)) 0 else 1)
-//  }
 }

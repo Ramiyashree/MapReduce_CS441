@@ -1,4 +1,6 @@
 package com.ramiya
+import com.typesafe.config.{Config, ConfigFactory}
+
 import java.lang.Iterable
 import java.util.StringTokenizer
 import org.apache.hadoop.conf.Configuration
@@ -13,7 +15,14 @@ import scala.collection.convert.ImplicitConversions.`iterable AsScalaIterable`
 import scala.io.Source
 import scala.util.matching.Regex
 class Task2
+
+/*Task 2: To display the time intervals sorted in the descending order
+that contained most log messages of the type ERROR with injected regex pattern string instances.
+*/
+
 object Task2 {
+
+  val conf: Config = ConfigFactory.load("application.conf")
 
   class Task2Mapper1 extends Mapper[Object, Text, Text, IntWritable] {
 
@@ -21,8 +30,9 @@ object Task2 {
     val word = new Text()
 
     override def map(key: Object, value: Text, context: Mapper[Object, Text, Text, IntWritable]#Context): Unit = {
-      val keyValPattern: Regex = "(^\\d{2}:\\d{2}:\\d{2}\\.\\d{3})\\s\\[([^\\]]*)\\]\\s(WARN|INFO|DEBUG|ERROR)\\s+([A-Z][A-Za-z\\.]+)\\$\\s-\\s(.*)".r
-      val inject_pattern : Regex = "[\\w]+".r
+
+      val keyValPattern: Regex = conf.getString("configuration.regexPatternTask2").r
+      val inject_pattern : Regex = conf.getString("configuration.injectedStringPattern").r
 
       val p = keyValPattern.findAllMatchIn(value.toString)
       p.toList.map((pattern) => {
@@ -48,8 +58,7 @@ object Task2 {
   class Task2Mapper2 extends Mapper[Object, Text, IntWritable, Text] {
 
     override def map(key: Object, value: Text, context: Mapper[Object, Text, IntWritable, Text]#Context): Unit = {
-
-      val line = value.toString.split("\t")
+      val line = value.toString.split(",")
       val result = line(1).toInt * -1
       context.write(new IntWritable(result), new Text(line(0)))
 
