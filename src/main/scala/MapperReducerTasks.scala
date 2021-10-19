@@ -41,6 +41,7 @@ def main(args: Array[String]): Unit = {
 
   val job1Name = conf.getString("configuration.job1")
   val job2Name = conf.getString("configuration.job2")
+  val job2NameMR2 = conf.getString("configuration.job2MR2")
   val job3Name = conf.getString("configuration.job3")
   val job4Name = conf.getString("configuration.job4")
 
@@ -69,7 +70,7 @@ def main(args: Array[String]): Unit = {
   job2.setReducerClass(classOf[Task2Reducer1])
   job2.setOutputKeyClass(classOf[Text])
   job2.setOutputValueClass(classOf[IntWritable])
-  job2.setOutputFormatClass(classOf[TextOutputFormat[Text, IntWritable]])
+//  job2.setOutputFormatClass(classOf[TextOutputFormat[Text, IntWritable]])
   FileInputFormat.addInputPath(job2, new Path(inputFile))
   FileOutputFormat.setOutputPath(job2, new Path((outputFile + "/" + job2Name)))
   if(job2.waitForCompletion(true)){
@@ -80,9 +81,10 @@ def main(args: Array[String]): Unit = {
     job2a.setReducerClass(classOf[Task2Reducer2])
     job2a.setOutputKeyClass(classOf[Text])
     job2a.setOutputValueClass(classOf[IntWritable]);
-    FileInputFormat.addInputPath(job2, new Path(outputFile + "/" + job2Name))
-    FileOutputFormat.setOutputPath(job2, new Path(outputFile + "/" + job2Name+"a"))
+    FileInputFormat.addInputPath(job2a, new Path(outputFile + "/" + job2Name))
+    FileOutputFormat.setOutputPath(job2a, new Path(outputFile + "/" + job2NameMR2))
   }
+
 
   /**
    * Job 3 - List of publications that contains only one author

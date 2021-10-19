@@ -22,7 +22,7 @@
 [0m[[0m[0mdebug[0m] [0m[0mcompilation cycle 1[0m
 [0m[[0m[0minfo[0m] [0m[0mcompiling 1 Scala source to C:\Users\19405\Desktop\UIC-F'21\441\WordCount\target\scala-2.13\classes ...[0m
 [0m[[0m[0mdebug[0m] [0m[0mGetting org.scala-sbt:compiler-bridge_2.13:1.5.7:compile for Scala 2.13.6[0m
-[0m[[0m[0mdebug[0m] [0m[0m[zinc] Running cached compiler 7c17f6cf for Scala compiler version 2.13.6[0m
+[0m[[0m[0mdebug[0m] [0m[0m[zinc] Running cached compiler 3a108d36 for Scala compiler version 2.13.6[0m
 [0m[[0m[0mdebug[0m] [0m[0m[zinc] The Scala compiler is invoked with:[0m
 [0m[[0m[0mdebug[0m] [0m[0m	-bootclasspath[0m
 [0m[[0m[0mdebug[0m] [0m[0m	C:\Users\19405\AppData\Local\Coursier\Cache\v1\https\repo1.maven.org\maven2\org\scala-lang\scala-library\2.13.6\scala-library-2.13.6.jar[0m
@@ -31,8 +31,8 @@
 [0m[[0m[0mdebug[0m] [0m[0mInvalidating (transitively) by inheritance from MapperReducerTasks...[0m
 [0m[[0m[0mdebug[0m] [0m[0mInitial set of included nodes: MapperReducerTasks[0m
 [0m[[0m[0mdebug[0m] [0m[0mInvalidated by transitive inheritance dependency: Set(MapperReducerTasks)[0m
-[0m[[0m[0mdebug[0m] [0m[0mChange NamesChange(MapperReducerTasks,ModifiedNames(changes = UsedName(verbose,[Default]), UsedName(finalize,[Default]))) invalidates 1 classes due to The MapperReducerTasks has the following regular definitions changed:[0m
-[0m[[0m[0mdebug[0m] [0m[0m	UsedName(verbose,[Default]), UsedName(finalize,[Default]).[0m
+[0m[[0m[0mdebug[0m] [0m[0mChange NamesChange(MapperReducerTasks,ModifiedNames(changes = UsedName(finalize,[Default]))) invalidates 1 classes due to The MapperReducerTasks has the following regular definitions changed:[0m
+[0m[[0m[0mdebug[0m] [0m[0m	UsedName(finalize,[Default]).[0m
 [0m[[0m[0mdebug[0m] [0m[0m  > by transitive inheritance: Set(MapperReducerTasks)[0m
 [0m[[0m[0mdebug[0m] [0m[0m  > [0m
 [0m[[0m[0mdebug[0m] [0m[0m  > [0m
@@ -43,5 +43,5 @@
 [0m[[0m[0mdebug[0m] [0m[0mFinal step, transitive dependencies:[0m
 [0m[[0m[0mdebug[0m] [0m[0m	Set()[0m
 [0m[[0m[0mdebug[0m] [0m[0mNo classes were invalidated.[0m
-[0m[[0m[0mdebug[0m] [0m[0mScala compilation took 2.2152317 s[0m
+[0m[[0m[0mdebug[0m] [0m[0mScala compilation took 2.1062629 s[0m
 [0m[[0m[0mdebug[0m] [0m[0mdone compiling[0m

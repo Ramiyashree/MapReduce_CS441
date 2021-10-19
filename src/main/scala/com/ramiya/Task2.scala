@@ -22,11 +22,17 @@ object Task2 {
 
     override def map(key: Object, value: Text, context: Mapper[Object, Text, Text, IntWritable]#Context): Unit = {
       val keyValPattern: Regex = "(^\\d{2}:\\d{2}:\\d{2}\\.\\d{3})\\s\\[([^\\]]*)\\]\\s(WARN|INFO|DEBUG|ERROR)\\s+([A-Z][A-Za-z\\.]+)\\$\\s-\\s(.*)".r
+      val inject_pattern : Regex = "[\\w]+".r
+
       val p = keyValPattern.findAllMatchIn(value.toString)
       p.toList.map((pattern) => {
-
-        word.set(pattern.group(1).split(":")(0))
-        context.write(word,one)
+        inject_pattern.findFirstMatchIn(pattern.group(5)) match {
+          case Some(_) => {
+            word.set(pattern.group(1).split(":")(0))
+            context.write(word,one)
+          }
+          case None => println("jgftfy")
+        }
       })
 
     }

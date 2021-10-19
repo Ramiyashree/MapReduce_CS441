@@ -33,11 +33,16 @@ object Task1 {
 
       val patternMatch =  keyValPattern.findFirstMatchIn(value.toString)
             patternMatch.toList.map(x => {
-              val time = LocalTime.parse(x.group(1), formatter)
-              if(startTime.isBefore(time) && endTime.isAfter(time)){
-                inject_pattern.findFirstMatchIn(x.group(5))
-                word.set(x.group(3))
-                context.write(word,one)
+              inject_pattern.findFirstMatchIn(x.group(5)) match {
+                case Some(_) => {
+                  val time = LocalTime.parse(x.group(1), formatter)
+                  if(startTime.isBefore(time) && endTime.isAfter(time)){
+                    inject_pattern.findFirstMatchIn(x.group(5))
+                    word.set(x.group(3))
+                    context.write(word,one)
+                  }
+                }
+                case None => println("jgftfy")
               }
             })
     }

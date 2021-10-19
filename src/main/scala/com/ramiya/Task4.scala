@@ -25,12 +25,18 @@ object Task4 {
                      context: Mapper[Object, Text, Text, IntWritable]#Context): Unit = {
 
       val keyValPattern: Regex = "(^\\d{2}:\\d{2}:\\d{2}\\.\\d{3})\\s\\[([^\\]]*)\\]\\s(WARN|INFO|DEBUG|ERROR)\\s+([A-Z][A-Za-z\\.]+)\\$\\s-\\s(.*)".r
+      val inject_pattern : Regex = "[\\w]+".r
 
       val patternMatch =  keyValPattern.findFirstMatchIn(value.toString)
-      patternMatch.toList.map(x => {
-        val charlength =new IntWritable(x.group(5).length)
-        word.set(x.group(3))
-        context.write(word, charlength)
+      patternMatch.toList.map((pattern) => {
+        inject_pattern.findFirstMatchIn(pattern.group(5)) match {
+          case Some(_) => {
+            val charlength =new IntWritable(pattern.group(5).length)
+            word.set(pattern.group(3))
+            context.write(word, charlength)
+          }
+          case None => println("jgftfy")
+        }
       })
     }
   }
