@@ -2,13 +2,13 @@
 
 ## HomeWork 2 - Map Reduce
 
-###Introduction
+### Introduction
 This homework's purpose is to perform map/reduce operations in order to generate various statistics for Log File.
 Task 1, Task 2, Task 3, and Task 4 are the numerous tasks here. The log file is located in the src/main/resources directory.
 
 EMR Deployment Demo :
 
-###Environment
+### Environment
 OS: Windows 10
 
 IDE: IntelliJ IDEA Ultimate 2018.3
@@ -19,7 +19,7 @@ Hadoop Distribution: Hortonworks Data Platform (3.0.1) Sandbox deployed on VMwar
 
 Log files (present under src/main/resources of this project)
 
-###Running the project
+### Running the project
 
 1) Clone this repository 
 
@@ -38,7 +38,7 @@ cd MapReduce_CS441
 sbt clean compile assembly
 ````
 
-###Running the jobs
+### Running the jobs
 1) Start HDP Sandbox VM
 
 2) Once HDP Sandbox VM is started, to initiate Hortonworks Sandbox session, open the address mentioned in VMware workstation and enter the login credentials
@@ -226,5 +226,6 @@ The output of every task can be located under OutputFiles folder
 You can see two output files from reach reduce task.
 
 Task1/Task3/Task4 : One output file containing ERROR/DEBUG/WARN and another with INFO.
+
 Task2 : One output file would be empty because my logfile doesn't have any hour between (1-12) but the other file with 13,15,17,18 which is between(13-24).
 
