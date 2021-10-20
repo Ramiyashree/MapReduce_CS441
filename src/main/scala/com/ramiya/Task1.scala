@@ -39,6 +39,7 @@ object Task1 {
       val keyValPattern: Regex = conf.getString("configuration.regexPattern").r
       val inject_pattern : Regex = conf.getString("configuration.injectedStringPattern").r
 
+      // The start and end time is assigned
       val formatter = DateTimeFormatter.ofPattern("HH:mm:ss.SSS")
       val startTime = LocalTime.parse(conf.getString("configuration.startTime"), formatter)
       val endTime = LocalTime.parse(conf.getString("configuration.endTime"), formatter)
