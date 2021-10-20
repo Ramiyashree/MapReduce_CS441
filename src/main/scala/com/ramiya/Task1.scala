@@ -16,7 +16,6 @@ import scala.collection.JavaConverters._
 import scala.util.matching.Regex
 class Task1
 
-
 object Task1 {
   val conf: Config = ConfigFactory.load("application.conf")
 
@@ -30,7 +29,7 @@ object Task1 {
   class Task1Mapper extends Mapper[Object, Text, Text, IntWritable] {
 
     val one = new IntWritable(1)
-    val word = new Text()
+    val logTag = new Text()
 
     override def map(key: Object,
                      value: Text,
@@ -50,8 +49,8 @@ object Task1 {
                 case Some(_) => {
                   val time = LocalTime.parse(x.group(1), formatter)
                   if(startTime.isBefore(time) && endTime.isAfter(time)){
-                    word.set(x.group(3))
-                    context.write(word,one)
+                    logTag.set(x.group(3))
+                    context.write(logTag,one)
                   }
                 }
                 case None => println("The Log message is not matching inject regex pattern")

@@ -29,12 +29,12 @@ def main(args: Array[String]): Unit = {
   logger.info("Starting MapReduce for all tasks")
 
   val configure: Configuration = new Configuration()
-  val configuration1: Configuration = new Configuration()
+  val configure1: Configuration = new Configuration()
 
 
   //Format as CSV output
   configure.set("mapred.textoutputformat.separator", ",")
-  configuration1.set("mapred.textoutputformat.separator", ",")
+  configure1.set("mapred.textoutputformat.separator", ",")
 
   val task1Name = conf.getString("configuration.task1")
   val task2Name = conf.getString("configuration.task2")
@@ -46,82 +46,83 @@ def main(args: Array[String]): Unit = {
    message type in a predefined time interval.
    **/
 
-  val job1: Job = Job.getInstance(configure, task1Name)
-  job1.setJarByClass(classOf[Task1])
-  job1.setMapperClass(classOf[Task1Mapper])
-  job1.setCombinerClass(classOf[Task1Reducer])
-  job1.setPartitionerClass(classOf[Task1Partitioner])
-  job1.setNumReduceTasks(2)
-  job1.setReducerClass(classOf[Task1Reducer])
-  job1.setOutputKeyClass(classOf[Text]);
-  job1.setOutputValueClass(classOf[IntWritable]);
-  job1.setOutputFormatClass(classOf[TextOutputFormat[Text, IntWritable]])
-  FileInputFormat.addInputPath(job1, new Path(inputFile))
-  FileOutputFormat.setOutputPath(job1, new Path((outputFile + "/" + task1Name)))
+  val task1: Job = Job.getInstance(configure, task1Name)
+  task1.setJarByClass(classOf[Task1])
+  task1.setMapperClass(classOf[Task1Mapper])
+  task1.setCombinerClass(classOf[Task1Reducer])
+  task1.setPartitionerClass(classOf[Task1Partitioner])
+  task1.setNumReduceTasks(2)
+  task1.setReducerClass(classOf[Task1Reducer])
+  task1.setOutputKeyClass(classOf[Text]);
+  task1.setOutputValueClass(classOf[IntWritable]);
+  task1.setOutputFormatClass(classOf[TextOutputFormat[Text, IntWritable]])
+  FileInputFormat.addInputPath(task1, new Path(inputFile))
+  FileOutputFormat.setOutputPath(task1, new Path((outputFile + "/" + task1Name)))
 
   /**Task 2: To display the time intervals sorted in the descending order
   that contained most log messages of the type ERROR with injected regex pattern string instances.
   **/
 
-  val job2: Job = Job.getInstance(configure, task2Name)
-  job2.setJarByClass(classOf[Task2])
-  job2.setMapperClass(classOf[Task2Mapper1])
-  job2.setCombinerClass(classOf[Task2Reducer1])
-  job2.setPartitionerClass(classOf[Task2Partitioner])
-  job2.setNumReduceTasks(2)
-  job2.setReducerClass(classOf[Task2Reducer1])
-  job2.setOutputKeyClass(classOf[Text])
-  job2.setOutputValueClass(classOf[IntWritable])
-  FileInputFormat.addInputPath(job2, new Path(inputFile))
-  FileOutputFormat.setOutputPath(job2, new Path((outputFile + "/" + task2Name)))
-  job2.waitForCompletion(true)
-  val job2a = Job.getInstance(configuration1,"word count")
-  job2a.setJarByClass(classOf[Task2])
-  job2a.setMapperClass(classOf[Task2Mapper2])
-  job2a.setReducerClass(classOf[Task2Reducer2])
-  job2a.setMapOutputKeyClass(classOf[IntWritable])
-  job2a.setMapOutputValueClass(classOf[Text])
-  job2a.setOutputKeyClass(classOf[Text])
-  job2a.setOutputValueClass(classOf[IntWritable]);
-  FileInputFormat.addInputPath(job2a, new Path(outputFile + "/" + task2Name))
-  FileOutputFormat.setOutputPath(job2a, new Path(outputFile + "/" + task2NameMR2))
-  job2a.waitForCompletion(true)
+  val task2: Job = Job.getInstance(configure, task2Name)
+  task2.setJarByClass(classOf[Task2])
+  task2.setMapperClass(classOf[Task2Mapper1])
+  task2.setCombinerClass(classOf[Task2Reducer1])
+  task2.setPartitionerClass(classOf[Task2Partitioner])
+  task2.setNumReduceTasks(2)
+  task2.setReducerClass(classOf[Task2Reducer1])
+  task2.setOutputKeyClass(classOf[Text])
+  task2.setOutputValueClass(classOf[IntWritable])
+  FileInputFormat.addInputPath(task2, new Path(inputFile))
+  FileOutputFormat.setOutputPath(task2, new Path((outputFile + "/" + task2Name)))
+  task2.waitForCompletion(true)
+  val task2a = Job.getInstance(configure1,"word count")
+  task2a.setJarByClass(classOf[Task2])
+  task2a.setMapperClass(classOf[Task2Mapper2])
+  task2a.setReducerClass(classOf[Task2Reducer2])
+  task2a.setMapOutputKeyClass(classOf[IntWritable])
+  task2a.setMapOutputValueClass(classOf[Text])
+  task2a.setOutputKeyClass(classOf[Text])
+  task2a.setOutputValueClass(classOf[IntWritable]);
+  FileInputFormat.addInputPath(task2a, new Path(outputFile + "/" + task2Name))
+  FileOutputFormat.setOutputPath(task2a, new Path(outputFile + "/" + task2NameMR2))
+  task2a.waitForCompletion(true)
 
   /**Task 3: To find the count of generated log messages for each message type.
   **/
 
-  val job3: Job = Job.getInstance(configure, task3Name)
-  job3.setJarByClass(classOf[Task3])
-  job3.setMapperClass(classOf[Task3Mapper])
-  job3.setCombinerClass(classOf[Task3Reducer])
-  job3.setPartitionerClass(classOf[Task3Partitioner])
-  job3.setNumReduceTasks(2)
-  job3.setReducerClass(classOf[Task3Reducer])
-  job3.setOutputKeyClass(classOf[Text])
-  job3.setOutputValueClass(classOf[IntWritable])
-  job3.setOutputFormatClass(classOf[TextOutputFormat[Text, IntWritable]])
-  FileInputFormat.addInputPath(job3, new Path(inputFile))
-  FileOutputFormat.setOutputPath(job3, new Path((outputFile + "/" + task3Name)))
+  val task3: Job = Job.getInstance(configure, task3Name)
+  task3.setJarByClass(classOf[Task3])
+  task3.setMapperClass(classOf[Task3Mapper])
+  task3.setCombinerClass(classOf[Task3Reducer])
+  task3.setPartitionerClass(classOf[Task3Partitioner])
+  task3.setNumReduceTasks(2)
+  task3.setReducerClass(classOf[Task3Reducer])
+  task3.setOutputKeyClass(classOf[Text])
+  task3.setOutputValueClass(classOf[IntWritable])
+  task3.setOutputFormatClass(classOf[TextOutputFormat[Text, IntWritable]])
+  FileInputFormat.addInputPath(task3, new Path(inputFile))
+  FileOutputFormat.setOutputPath(task3, new Path((outputFile + "/" + task3Name)))
 
   /**
   Task 4: To produce the number of characters in each log message for each log message type that contain the
   highest number of characters in the detected instances of the designated regex pattern.
    **/
 
-  val job4: Job = Job.getInstance(configure, task4Name)
-  job4.setJarByClass(classOf[Task4])
-  job4.setMapperClass(classOf[Task4Mapper])
-  job4.setCombinerClass(classOf[Task4Reducer])
-  job4.setPartitionerClass(classOf[Task4Partitioner])
-  job4.setNumReduceTasks(2)
-  job4.setReducerClass(classOf[Task4Reducer])
-  job4.setOutputKeyClass(classOf[Text])
-  job4.setOutputValueClass(classOf[IntWritable])
-  job4.setOutputFormatClass(classOf[TextOutputFormat[Text, IntWritable]])
-  FileInputFormat.addInputPath(job4, new Path(inputFile))
-  FileOutputFormat.setOutputPath(job4, new Path((outputFile + "/" + task4Name)))
+  val task4: Job = Job.getInstance(configure, task4Name)
+  task4.setJarByClass(classOf[Task4])
+  task4.setMapperClass(classOf[Task4Mapper])
+  task4.setCombinerClass(classOf[Task4Reducer])
+  task4.setPartitionerClass(classOf[Task4Partitioner])
+  task4.setNumReduceTasks(2)
+  task4.setReducerClass(classOf[Task4Reducer])
+  task4.setOutputKeyClass(classOf[Text])
+  task4.setOutputValueClass(classOf[IntWritable])
+  task4.setOutputFormatClass(classOf[TextOutputFormat[Text, IntWritable]])
+  FileInputFormat.addInputPath(task4, new Path(inputFile))
+  FileOutputFormat.setOutputPath(task4, new Path((outputFile + "/" + task4Name)))
 
-  if (job1.waitForCompletion(true) && job2.waitForCompletion(true)  && job3.waitForCompletion(true) && job4.waitForCompletion(true)) {
+  //Once all the tasks are run the success message is logged
+  if (task1.waitForCompletion(true) && task2.waitForCompletion(true)  && task3.waitForCompletion(true) && task4.waitForCompletion(true)) {
     logger.info("ALL JOBS SUCCESSFULLY COMPLETED")
   } else {
     logger.info("UNFORTUNATELY FAILED")
