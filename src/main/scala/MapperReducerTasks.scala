@@ -79,6 +79,7 @@ def main(args: Array[String]): Unit = {
   task2a.setJarByClass(classOf[Task2])
   task2a.setMapperClass(classOf[Task2Mapper2])
   task2a.setReducerClass(classOf[Task2Reducer2])
+  task2a.setNumReduceTasks(1)
   task2a.setMapOutputKeyClass(classOf[IntWritable])
   task2a.setMapOutputValueClass(classOf[Text])
   task2a.setOutputKeyClass(classOf[Text])

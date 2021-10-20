@@ -187,6 +187,8 @@ Task1Partitioner : (Key, Value) (Key ->  logMessageTag - [ERRO/INFO/WARN/DEBUG])
 
 Every one hour is chosen as the time interval here. So, for every hour the ERROR tag injected regex pattern log messages is counted and displayed in descending order based on the count.
 
+Task2 has two mapper and reducer. The first mapper and reducer provides the aggreagted count of log message. The second mapper and reducer is used for sorting. Task2Reducer1 output is passed to Task2Mapper2 and Task2Mapper2 sends the (key - count of log messages * -1,value - the time) to Task2reducer2 where the sorting is done based on the key.
+
 Task2Mapper1: (Key, Value) (key -> Hour - [1..24]), (value -> 1)
 
 Task2Reducer1 : (Key, Value) (key -> Hour - [1..24]) , (value -> sum of the Error tag logMessage count)
@@ -225,7 +227,8 @@ Task4Partitioner : (Key, Value) (Key -> logMessageTag - [ERRO/INFO/WARN/DEBUG]) 
 The output of every task can be located under OutputFiles folder
 You can see two output files from reach reduce task.
 
-Task1/Task3/Task4 : One output file containing ERROR/DEBUG/WARN and another with INFO.
+task1/Task3/Task4 : One output file containing ERROR/DEBUG/WARN and another with INFO.
 
-Task2 : One output file would be empty because my logfile doesn't have any hour between (1-12) but the other file with 13,15,17,18 which is between(13-24).
+task2 : This is the intermediate output of task2 before sorting. This is the output from the Task2Reducer1. One output file would be empty because my logfile doesn't have any hour between (1-12) but the other file with 13,15,17,18 which is between(13-24).
 
+task2MR2 : The final sorted output of the Task2 after sorting is done. This is the output from the Task2Reducer2.
