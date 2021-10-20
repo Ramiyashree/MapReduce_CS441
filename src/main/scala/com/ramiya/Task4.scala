@@ -28,7 +28,7 @@ object Task4 {
   class Task4Mapper extends Mapper[Object, Text, Text, IntWritable] {
 
     val one = new IntWritable(1)
-    val word = new Text()
+    val logTag = new Text()
 
     override def map(key: Object,
                      value: Text,
@@ -37,13 +37,16 @@ object Task4 {
       val keyValPattern: Regex = conf.getString("configuration.regexPattern").r
       val inject_pattern : Regex = conf.getString("configuration.injectedStringPattern").r
 
+      // If the a Log entry matches the regex pattern, the generated log messages matches the injected string pattern,
+      // every log message and its count is passed to reducer
+
       val patternMatch =  keyValPattern.findFirstMatchIn(value.toString)
       patternMatch.toList.map((pattern) => {
         inject_pattern.findFirstMatchIn(pattern.group(5)) match {
           case Some(_) => {
             val charlength =new IntWritable(pattern.group(5).length)
-            word.set(pattern.group(3))
-            context.write(word, charlength)
+            logTag.set(pattern.group(3))
+            context.write(logTag, charlength)
           }
           case None => println("error")
         }
@@ -62,6 +65,8 @@ object Task4 {
   class Task4Reducer extends Reducer[Text, IntWritable, Text, IntWritable] {
     override def reduce(key: Text, values: Iterable[IntWritable],
                         context: Reducer[Text, IntWritable, Text, IntWritable]#Context): Unit = {
+
+      // the max of the value for a specific log message tag is retrieved
       val sum = values.asScala.foldLeft(0)(_ max _.get)
       context.write(key, new IntWritable(sum))
     }

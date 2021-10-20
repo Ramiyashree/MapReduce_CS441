@@ -43,6 +43,9 @@ object Task1 {
       val startTime = LocalTime.parse(conf.getString("configuration.startTime"), formatter)
       val endTime = LocalTime.parse(conf.getString("configuration.endTime"), formatter)
 
+      // If the a Log entry matches the regex pattern, the generated log messages matches the injected string pattern,
+      // and if the log are in a predefined time interval the count is passed to the reducer
+
       val patternMatch =  keyValPattern.findFirstMatchIn(value.toString)
             patternMatch.toList.map(x => {
               inject_pattern.findFirstMatchIn(x.group(5)) match {
@@ -83,7 +86,6 @@ object Task1 {
 
   class Task1Partitioner extends Partitioner[Text, IntWritable] {
     override def getPartition(key: Text, value: IntWritable, numReduceTasks: Int): Int = {
-
       if (key.toString == "INFO") {
         return 1 % numReduceTasks
       }

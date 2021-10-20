@@ -31,21 +31,25 @@ object Task2 {
   class Task2Mapper1 extends Mapper[Object, Text, Text, IntWritable] {
 
     val one = new IntWritable(1)
-    val word = new Text()
+    val timeInterval = new Text()
 
     override def map(key: Object, value: Text, context: Mapper[Object, Text, Text, IntWritable]#Context): Unit = {
 
+
       val keyValPattern: Regex = conf.getString("configuration.regexPatternTask2").r
       val inject_pattern : Regex = conf.getString("configuration.injectedStringPattern").r
+
+      // If the a Log entry matches the regex pattern, and the generated log messages matches the injected string pattern
+      // the log count for every hour is passed to the reducer
 
       val p = keyValPattern.findAllMatchIn(value.toString)
       p.toList.map((pattern) => {
         inject_pattern.findFirstMatchIn(pattern.group(5)) match {
           case Some(_) => {
-            word.set(pattern.group(1).split(":")(0))
-            context.write(word,one)
+            timeInterval.set(pattern.group(1).split(":")(0))
+            context.write(timeInterval,one)
           }
-          case None => println("error")
+          case None => println("The Log message is not matching inject regex pattern")
         }
       })
 
@@ -92,6 +96,8 @@ object Task2 {
   class Task2Mapper2 extends Mapper[Object, Text, IntWritable, Text] {
 
     override def map(key: Object, value: Text, context: Mapper[Object, Text, IntWritable, Text]#Context): Unit = {
+
+      // Here, the count of the log messages is multiplied with -1 and passed as key which will be sorted in descending order
       val line = value.toString.split(",")
       val result = line(1).toInt * -1
       context.write(new IntWritable(result), new Text(line(0)))

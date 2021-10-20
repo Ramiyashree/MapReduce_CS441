@@ -27,7 +27,7 @@ object Task3 {
   class Task3Mapper extends Mapper[Object, Text, Text, IntWritable] {
 
     val one = new IntWritable(1)
-    val word = new Text()
+    val logTag = new Text()
 
     override def map(key: Object,
                      value: Text,
@@ -35,10 +35,12 @@ object Task3 {
 
       val keyValPattern: Regex = conf.getString("configuration.regexPattern").r
 
+      // If the a Log entry matches the regex pattern, for every log message tag - the count is passed to the reducer
+
             val p = keyValPattern.findAllMatchIn(value.toString)
             p.toList.map((pattern) => {
-              word.set(pattern.group(3))
-              context.write(word,one)
+              logTag.set(pattern.group(3))
+              context.write(logTag,one)
             })
     }
   }
