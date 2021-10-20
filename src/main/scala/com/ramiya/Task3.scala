@@ -19,6 +19,9 @@ object Task3 {
   val conf: Config = ConfigFactory.load("application.conf")
 
   /**This class represents the Mapper class to find the count of generated log messages for each message type.
+   * @param key : Text - Log Message Tag
+   * @param value : IntWritable - Log message Count
+   * @return returnType : Unit - (key, value)
    **/
 
   class Task3Mapper extends Mapper[Object, Text, Text, IntWritable] {
@@ -41,6 +44,9 @@ object Task3 {
   }
 
   /**This class represents the Reducer class to find the count of generated log messages for each message type.
+   * @param key : Text - Log Message Tag
+   * @param value : IntWritable - Aggregated message Count
+   * @return returnType : Unit - (key, value)
    **/
 
   class Task3Reducer extends Reducer[Text, IntWritable, Text, IntWritable] {
@@ -52,7 +58,12 @@ object Task3 {
   }
 
   /**This class represents the Partitioner cLass to partition the data using 2 reduceTasks
+   * @param key : Text - Log Message Tag
+   * @param value : IntWritable - value 1
+   * @param numReduceTasks : Int
+   * @return returnType : Int
    **/
+
 
   class Task3Partitioner extends Partitioner[Text, IntWritable] {
     override def getPartition(key: Text, value: IntWritable, numReduceTasks: Int): Int = {

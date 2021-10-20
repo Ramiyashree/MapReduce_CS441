@@ -24,7 +24,7 @@ object Task1 {
    message type in a predefined time interval(between the start and end time - both exclusive)
   * @param key : Object - Log Message Tag
    * @param value : Text - Count of the Log Message Tag
-   * @return returnType : Unit
+   * @return returnType : Unit - Key, Value
    **/
 
   class Task1Mapper extends Mapper[Object, Text, Text, IntWritable] {
@@ -61,9 +61,9 @@ object Task1 {
 
   /**This class represents the Reducer Class to find the count of generated log messages with injected regex pattern for each
    message type in a predefined time interval(between the start and end time - both exclusive)
-   * @param key : Text - Log Message Tag
-   * @param value : Value - aggreagted unt of the Log Message Tag
-   * @return returnType : Unit
+   * @param key : Text - Unique Log Message Tag
+   * @param value : IntWritable - aggregated count of the Log Message Tag
+   * @return returnType : Unit - Key, Value
    **/
 
   class Task1Reducer extends Reducer[Text, IntWritable, Text, IntWritable] {
@@ -75,6 +75,10 @@ object Task1 {
   }
 
   /**This class represents the Partitioner cLass to partition the data using 2 reduceTasks
+   * @param key : Text - Log Message Tag
+   * @param value : IntWritable - value 1
+   * @param numReduceTasks : Int
+   * @return returnType : Int
    **/
 
   class Task1Partitioner extends Partitioner[Text, IntWritable] {

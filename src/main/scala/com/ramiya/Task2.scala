@@ -23,6 +23,9 @@ object Task2 {
   val conf: Config = ConfigFactory.load("application.conf")
 
   /**Task 2: This class represents the Mapper cLass to display the count log messages of the type ERROR with injected regex pattern string instances in every one hour(time intervals).
+   * @param key : Object - Time Interval
+   * @param value : Text -  message count
+   * @return returnType : Unit - (key, value)
    **/
 
   class Task2Mapper1 extends Mapper[Object, Text, Text, IntWritable] {
@@ -51,6 +54,9 @@ object Task2 {
 
 
   /**Task 2: This class represents the Reducer cLass to display the count log messages of the type ERROR with injected regex pattern string instances in every one hour(time intervals).
+   * @param key : Text - Time Interval
+   * @param value : IntWritable - Aggregated Message count
+   * @return returnType : Unit - (key, value)
    **/
 
   class Task2Reducer1 extends Reducer[Text,IntWritable,Text,IntWritable] {
@@ -62,6 +68,10 @@ object Task2 {
 
 
   /**This class represents the Partitioner cLass to partition the data using 2 reduceTasks
+   * @param key : Text - Time Interval
+   * @param value : IntWritable - value 1
+   * @param numReduceTasks : Int
+   * @return returnType : Int
    **/
 
   class Task2Partitioner extends Partitioner[Text, IntWritable] {
@@ -74,6 +84,9 @@ object Task2 {
   }
 
   /**Task 2: This class represents the Mapper cLass to display in SORTED ORDER based on the count log messages of the type ERROR with injected regex pattern string instances in every one hour(time intervals)
+   * @param key : Object - Time Interval
+   * @param value : Text -  Aggregated Message Count
+   * @return returnType : Unit - (key, value)
    **/
 
   class Task2Mapper2 extends Mapper[Object, Text, IntWritable, Text] {
@@ -87,6 +100,9 @@ object Task2 {
   }
 
   /**Task 2: This class represents the Reducer cLass to display in SORTED ORDER based on the count log messages of the type ERROR with injected regex pattern string instances in every one hour(time intervals)
+   * @param key : IntWritable - Time Interval
+   * @param value : Text - Sorted order count(descending order)
+   * @return returnType : Unit - (key, value)
    **/
 
   class Task2Reducer2 extends Reducer[IntWritable,Text,Text,IntWritable] {
@@ -94,32 +110,5 @@ object Task2 {
       values.asScala.foreach(value => context.write(value, new IntWritable(key.get() * -1)))
     }
   }
-
-
-//  def main(args: Array[String]): Unit = {
-//    val configuration = new Configuration
-//    val job = Job.getInstance(configuration,"word count")
-//    job.setJarByClass(this.getClass)
-//    job.setMapperClass(classOf[Task2Mapper1])
-//    job.setCombinerClass(classOf[Task2Reducer1])
-//    job.setReducerClass(classOf[Task2Reducer1])
-//    job.setOutputKeyClass(classOf[Text])
-//    job.setOutputValueClass(classOf[IntWritable]);
-//    FileInputFormat.addInputPath(job, new Path(args(0)))
-//    FileOutputFormat.setOutputPath(job, new Path(args(1)))
-//    if(job.waitForCompletion(true)){
-//      val configuration1 = new Configuration
-//      val job1 = Job.getInstance(configuration1,"word count")
-//      job1.setJarByClass(this.getClass)
-//      job1.setMapperClass(classOf[Task2Mapper2])
-//      job1.setReducerClass(classOf[Task2Reducer2])
-//      job1.setOutputKeyClass(classOf[Text])
-//      job1.setOutputValueClass(classOf[IntWritable]);
-//      FileInputFormat.addInputPath(job, new Path(args(1)))
-//      FileOutputFormat.setOutputPath(job, new Path(args(2)))
-//      System.exit(if(job1.waitForCompletion(true))  0 else 1)
-//
-//    }
-//  }
 
 }

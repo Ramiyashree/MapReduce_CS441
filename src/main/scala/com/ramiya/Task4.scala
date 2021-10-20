@@ -20,7 +20,11 @@ object Task4 {
   /**
   This class represents the Mapper class to produce the number of characters in each log message for each log message type that contain the
   highest number of characters in the detected instances of the designated regex pattern.
+   * @param key : Object - Log Message Tag
+   * @param value : Text - value 1
+   * @return returnType : Unit - [Key, Value]
    **/
+
   class Task4Mapper extends Mapper[Object, Text, Text, IntWritable] {
 
     val one = new IntWritable(1)
@@ -50,6 +54,9 @@ object Task4 {
   /**
   This class represents the Reducer class to produce the number of characters in each log message for each log message type that contain the
   highest number of characters in the detected instances of the designated regex pattern.
+   * @param key : Text - Log Message Tag
+   * @param value : IntWritable - max value of every log message tag
+   * @return returnType : Unit - (Key, Value)
    **/
 
   class Task4Reducer extends Reducer[Text, IntWritable, Text, IntWritable] {
@@ -61,6 +68,10 @@ object Task4 {
   }
 
   /**This class represents the Partitioner cLass to partition the data using 2 reduceTasks
+   * @param key : Text - Log Message Tag
+   * @param value : IntWritable - value 1
+   * @param numReduceTasks : Int
+   * @return returnType : Int
    **/
 
   class Task4Partitioner extends Partitioner[Text, IntWritable] {
