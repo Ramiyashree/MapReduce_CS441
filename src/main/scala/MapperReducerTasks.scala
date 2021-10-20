@@ -52,7 +52,7 @@ def main(args: Array[String]): Unit = {
   job1.setOutputFormatClass(classOf[TextOutputFormat[Text, IntWritable]])
   FileInputFormat.addInputPath(job1, new Path(inputFile))
   FileOutputFormat.setOutputPath(job1, new Path((outputFile + "/" + job1Name)))
- // job1.waitForCompletion(true)
+  job1.waitForCompletion(true)
 
   /**
    * Job 2
@@ -64,23 +64,21 @@ def main(args: Array[String]): Unit = {
   job2.setReducerClass(classOf[Task2Reducer1])
   job2.setOutputKeyClass(classOf[Text])
   job2.setOutputValueClass(classOf[IntWritable])
-//  job2.setOutputFormatClass(classOf[TextOutputFormat[Text, IntWritable]])
   FileInputFormat.addInputPath(job2, new Path(inputFile))
   FileOutputFormat.setOutputPath(job2, new Path((outputFile + "/" + job2Name)))
   job2.waitForCompletion(true)
-    val configuration1 = new Configuration
-    val job2a = Job.getInstance(configuration1,"word count")
-    job2a.setJarByClass(classOf[Task2])
-    job2a.setMapperClass(classOf[Task2Mapper2])
-    job2a.setReducerClass(classOf[Task2Reducer2])
-    job2a.setMapOutputKeyClass(classOf[IntWritable])
-    job2a.setMapOutputValueClass(classOf[Text])
-    job2a.setOutputKeyClass(classOf[Text])
-    job2a.setOutputValueClass(classOf[IntWritable]);
-    FileInputFormat.addInputPath(job2a, new Path(outputFile + "/" + job2Name))
-    FileOutputFormat.setOutputPath(job2a, new Path(outputFile + "/" + job2NameMR2))
-    job2a.waitForCompletion(true)
-
+  val configuration1 = new Configuration
+  val job2a = Job.getInstance(configuration1,"word count")
+  job2a.setJarByClass(classOf[Task2])
+  job2a.setMapperClass(classOf[Task2Mapper2])
+  job2a.setReducerClass(classOf[Task2Reducer2])
+  job2a.setMapOutputKeyClass(classOf[IntWritable])
+  job2a.setMapOutputValueClass(classOf[Text])
+  job2a.setOutputKeyClass(classOf[Text])
+  job2a.setOutputValueClass(classOf[IntWritable]);
+  FileInputFormat.addInputPath(job2a, new Path(outputFile + "/" + job2Name))
+  FileOutputFormat.setOutputPath(job2a, new Path(outputFile + "/" + job2NameMR2))
+  job2a.waitForCompletion(true)
 
   /**
    * Job 3
@@ -95,7 +93,7 @@ def main(args: Array[String]): Unit = {
   job3.setOutputFormatClass(classOf[TextOutputFormat[Text, IntWritable]])
   FileInputFormat.addInputPath(job3, new Path(inputFile))
   FileOutputFormat.setOutputPath(job3, new Path((outputFile + "/" + job3Name)))
- // job3.waitForCompletion(true)
+  job3.waitForCompletion(true)
 
   /**
    * Job 4
@@ -110,12 +108,40 @@ def main(args: Array[String]): Unit = {
   job4.setOutputFormatClass(classOf[TextOutputFormat[Text, IntWritable]])
   FileInputFormat.addInputPath(job4, new Path(inputFile))
   FileOutputFormat.setOutputPath(job4, new Path((outputFile + "/" + job4Name)))
- // job4.waitForCompletion(true)
-
-
-
-//  val verbose: Boolean = true
-//  if (job1.waitForCompletion(verbose) && job2.waitForCompletion(verbose) && job2a.waitForCompletion(verbose) && job3.waitForCompletion(verbose) && job4.waitForCompletion(verbose)) {
+  job4.waitForCompletion(true)
+//
+//  if(job1.waitForCompletion(true)){
+//    logger.info("Task1 executed successfully")
+//  }else{
+//    logger.info("Task1 failed")
+//  }
+//
+//  if(job2.waitForCompletion(true)){
+//    logger.info("Task2 executed successfully")
+//  }else{
+//    logger.info("Task2 failed")
+//  }
+//
+//  if(job2a.waitForCompletion(true)){
+//    logger.info("Task2 Sorting executed successfully")
+//  }else{
+//    logger.info("Task2 Sorting failed")
+//  }
+//
+//  if(job3.waitForCompletion(true)){
+//    logger.info("Task3 executed successfully")
+//  }else{
+//    logger.info("Task3 failed")
+//  }
+//
+//  if(job4.waitForCompletion(true)){
+//    logger.info("Task4 executed successfully")
+//  }else{
+//    logger.info("Task4 failed")
+//  }
+//
+//
+//  if (job1.waitForCompletion(true) && job2.waitForCompletion(true) && job2a.waitForCompletion(verbose) && job3.waitForCompletion(verbose) && job4.waitForCompletion(verbose)) {
 //    val endTime = System.nanoTime
 //    val totalTime = endTime - startTime
 //    logger.info("--- SUCCESSFULLY COMPLETED (Execution completed in: " + totalTime / 1_000_000_000 + " sec) ---")
