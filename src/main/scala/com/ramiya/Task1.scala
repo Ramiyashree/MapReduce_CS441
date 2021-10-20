@@ -6,7 +6,7 @@ import org.apache.hadoop.fs.Path
 import org.apache.hadoop.io.{IntWritable, Text}
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat
-import org.apache.hadoop.mapreduce.{Job, Mapper, Reducer}
+import org.apache.hadoop.mapreduce.{Job, Mapper, Partitioner, Reducer}
 
 import java.lang.Iterable
 import java.time.LocalTime
@@ -16,12 +16,16 @@ import scala.collection.JavaConverters._
 import scala.util.matching.Regex
 class Task1
 
-/*Task 1: To find the count of generated log messages with injected regex pattern for each
-message type in a predefined time interval.
- */
 
 object Task1 {
   val conf: Config = ConfigFactory.load("application.conf")
+
+  /**This class represents the Mapper Class to find the count of generated log messages with injected regex pattern for each
+   message type in a predefined time interval(between the start and end time - both exclusive)
+  * @param key : Object - Log Message Tag
+   * @param value : Text - Count of the Log Message Tag
+   * @return returnType : Unit
+   **/
 
   class Task1Mapper extends Mapper[Object, Text, Text, IntWritable] {
 
@@ -49,17 +53,37 @@ object Task1 {
                     context.write(word,one)
                   }
                 }
-                case None => println("Injected Regex Pattern is not matching the log message")
+                case None => println("The Log message is not matching inject regex pattern")
               }
             })
     }
   }
 
+  /**This class represents the Reducer Class to find the count of generated log messages with injected regex pattern for each
+   message type in a predefined time interval(between the start and end time - both exclusive)
+   * @param key : Text - Log Message Tag
+   * @param value : Value - aggreagted unt of the Log Message Tag
+   * @return returnType : Unit
+   **/
+
   class Task1Reducer extends Reducer[Text, IntWritable, Text, IntWritable] {
     override def reduce(key: Text, values: Iterable[IntWritable],
                         context: Reducer[Text, IntWritable, Text, IntWritable]#Context): Unit = {
-      var sum = values.asScala.foldLeft(0)(_ + _.get)
+      val sum = values.asScala.foldLeft(0)(_ + _.get)
       context.write(key, new IntWritable(sum))
+    }
+  }
+
+  /**This class represents the Partitioner cLass to partition the data using 2 reduceTasks
+   **/
+
+  class Task1Partitioner extends Partitioner[Text, IntWritable] {
+    override def getPartition(key: Text, value: IntWritable, numReduceTasks: Int): Int = {
+
+      if (key.toString == "INFO") {
+        return 1 % numReduceTasks
+      }
+      return 0
     }
   }
 }
