@@ -39,6 +39,8 @@ object Task4 {
 
       // If the a Log entry matches the regex pattern, the generated log messages matches the injected string pattern,
       // every log message and its count is passed to reducer
+      //here, Key -> Log Messgae Tag
+      // and value -> log message length
 
       val patternMatch =  keyValPattern.findFirstMatchIn(value.toString)
       patternMatch.toList.map((pattern) => {
@@ -81,6 +83,9 @@ object Task4 {
 
   class Task4Partitioner extends Partitioner[Text, IntWritable] {
     override def getPartition(key: Text, value: IntWritable, numReduceTasks: Int): Int = {
+
+      //data is partitioned across reduceTask1(INFO) and reduceTask0(ERROR,WARN,DEBUG)
+
       if (key.toString == "INFO") {
         return 1 % numReduceTasks
       }

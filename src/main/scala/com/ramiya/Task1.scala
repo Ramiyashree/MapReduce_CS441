@@ -43,8 +43,10 @@ object Task1 {
       val startTime = LocalTime.parse(conf.getString("configuration.startTime"), formatter)
       val endTime = LocalTime.parse(conf.getString("configuration.endTime"), formatter)
 
-      // If the a Log entry matches the regex pattern, the generated log messages matches the injected string pattern,
-      // and if the log are in a predefined time interval the count is passed to the reducer
+      // If the a Log entry matches the regex pattern, and the generated log messages matches the injected string pattern,
+      // and if the log is in a predefined time interval the count is passed to the reducer
+      // Here, Key : Log Message Tag - Group 3 in the regex pattern
+      // Value : 1 - count for every entry
 
       val patternMatch =  keyValPattern.findFirstMatchIn(value.toString)
             patternMatch.toList.map(x => {
@@ -72,6 +74,8 @@ object Task1 {
   class Task1Reducer extends Reducer[Text, IntWritable, Text, IntWritable] {
     override def reduce(key: Text, values: Iterable[IntWritable],
                         context: Reducer[Text, IntWritable, Text, IntWritable]#Context): Unit = {
+
+      // reducer aggregates the count for every unique key
       val sum = values.asScala.foldLeft(0)(_ + _.get)
       context.write(key, new IntWritable(sum))
     }
@@ -86,6 +90,9 @@ object Task1 {
 
   class Task1Partitioner extends Partitioner[Text, IntWritable] {
     override def getPartition(key: Text, value: IntWritable, numReduceTasks: Int): Int = {
+
+      //data is partitioned across reduceTask1(INFO) and reduceTask0(ERROR,WARN,DEBUG)
+
       if (key.toString == "INFO") {
         return 1 % numReduceTasks
       }

@@ -40,7 +40,9 @@ object Task2 {
       val inject_pattern : Regex = conf.getString("configuration.injectedStringPattern").r
 
       // If the a Log entry matches the regex pattern, and the generated log messages matches the injected string pattern
-      // the log count for every hour is passed to the reducer
+      // the ERROR log message is counted
+      // Here. Key - TIME (HOUR) - GROUP(1) . Time is in HH.mm.ss.SSS format so split(:)(0) is hour
+      // Value - count : 1
 
       val p = keyValPattern.findAllMatchIn(value.toString)
       p.toList.map((pattern) => {
@@ -65,6 +67,7 @@ object Task2 {
 
   class Task2Reducer1 extends Reducer[Text,IntWritable,Text,IntWritable] {
     override def reduce(key: Text, values: Iterable[IntWritable], context: Reducer[Text, IntWritable, Text, IntWritable]#Context): Unit = {
+     //for every hour the count of log messages are summed
       val sum = values.asScala.foldLeft(0)(_ + _.get())
       context.write(key, new IntWritable(sum))
     }
@@ -80,6 +83,8 @@ object Task2 {
 
   class Task2Partitioner extends Partitioner[Text, IntWritable] {
     override def getPartition(key: Text, value: IntWritable, numReduceTasks: Int): Int = {
+      //hour 1 to hour 12 is partitioned to reducetask1 and
+      //hour 13 to 14 is partitioned to reducetask2
       if (key.toString.toInt >= 1 && key.toString.toInt <= 12) {
         return 1 % numReduceTasks
       }
@@ -97,7 +102,8 @@ object Task2 {
 
     override def map(key: Object, value: Text, context: Mapper[Object, Text, IntWritable, Text]#Context): Unit = {
 
-      // Here, the count of the log messages is multiplied with -1 and passed as key which will be sorted in descending order
+      //output from reducer1 is split with , separator
+      // Here, the count of the log messages is multiplied with -1 and passed as key which will be sorted in descending order by reducer
       val line = value.toString.split(",")
       val result = line(1).toInt * -1
       context.write(new IntWritable(result), new Text(line(0)))
@@ -113,6 +119,7 @@ object Task2 {
 
   class Task2Reducer2 extends Reducer[IntWritable,Text,Text,IntWritable] {
     override def reduce(key: IntWritable, values: Iterable[Text], context: Reducer[IntWritable, Text, Text, IntWritable]#Context): Unit = {
+      //the count is reverted back to original value by multiplying by -1
       values.asScala.foreach(value => context.write(value, new IntWritable(key.get() * -1)))
     }
   }

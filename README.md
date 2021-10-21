@@ -21,6 +21,14 @@ Hadoop Distribution: Hortonworks Data Platform (3.0.1) Sandbox deployed on VMwar
 
 Log files (present under src/main/resources of this project)
 
+### Running the test file
+
+Test File can be found under /src/test/scala/MapReduceTest
+
+````
+sbt clean compile test
+````
+
 ### Running the project
 
 1) Clone this repository 

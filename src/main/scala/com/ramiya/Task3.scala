@@ -36,6 +36,8 @@ object Task3 {
       val keyValPattern: Regex = conf.getString("configuration.regexPattern").r
 
       // If the a Log entry matches the regex pattern, for every log message tag - the count is passed to the reducer
+      // Here, Key - group(3) is logMessageTag
+      //and value - count : 1
 
             val p = keyValPattern.findAllMatchIn(value.toString)
             p.toList.map((pattern) => {
@@ -54,6 +56,7 @@ object Task3 {
   class Task3Reducer extends Reducer[Text, IntWritable, Text, IntWritable] {
     override def reduce(key: Text, values: Iterable[IntWritable],
                         context: Reducer[Text, IntWritable, Text, IntWritable]#Context): Unit = {
+      //aggregated log message count for unique log message tag
       val sum = values.asScala.foldLeft(0)(_ + _.get)
       context.write(key, new IntWritable(sum))
     }
@@ -69,6 +72,8 @@ object Task3 {
 
   class Task3Partitioner extends Partitioner[Text, IntWritable] {
     override def getPartition(key: Text, value: IntWritable, numReduceTasks: Int): Int = {
+
+      //data is partitioned across reduceTask1(INFO) and reduceTask0(ERROR,WARN,DEBUG)
 
       if (key.toString == "INFO") {
         return 1 % numReduceTasks
