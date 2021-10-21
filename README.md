@@ -187,7 +187,7 @@ Note : regex pattern is mentioned in the application.conf
 
 **1) Task 1:** To find the count of generated log messages with injected regex pattern for each message type in a predefined time interval.
 
-A predefined time interval is mentioned in the application.conf. Using this start and end time, the log messages with that injected regex pattern for every log message tag is counted.
+A predefined time interval is mentioned in the application.conf. Using this start and end time, the log messages with that injected regex pattern for every log message tag is counted.(predefined time interval - startTime and endTime are configured in `application.conf`) 
 
 Task1Mapper: (Key, Value) (key -> logMessageTag - [ERRO/INFO/WARN/DEBUG]), (value -> 1)
 
