@@ -6,7 +6,9 @@
 This homework's purpose is to perform map/reduce operations in order to generate various statistics for Log File.
 Task 1, Task 2, Task 3, and Task 4 are the numerous tasks here. The log file is located in the src/main/resources directory.
 
-EMR Deployment Demo :
+Video Link : https://youtu.be/tCL58WP2cHc
+
+The video explains deployment of hadoop application in AWS EMR Instance
 
 ### Environment
 OS: Windows 10
@@ -156,24 +158,26 @@ scp -P 2222 -r root@192.168.133.128:/root/MapReduce/mapReduceOutput /mapReduceOu
 
 There are totally 4 tasks created in this homework. They are clearly listed below
 
-Firstly, the regex pattern is checked across the log entry for all four tasks. If it succeeds, it moves on to the job computation.
-Note : regex pattern is mentioned in the application.conf
+**Mapper:** The input data is first processed by all Mappers/Map tasks, and then the intermediate output is generated.
 
-Mapper: The input data is first processed by all Mappers/Map tasks, and then the intermediate output is generated.
+**Combiner:** Before the shuffle/sort phase, the Combiner optimizes all intermediate outputs using local aggregation. Combiners' main purpose is to reduce bandwidth by reducing the number of key/value pairs that must be shuffled across the network and delivered as input to the Reducer.
 
-Combiner : Before the shuffle/sort phase, the Combiner optimizes all intermediate outputs using local aggregation. Combiners' main purpose is to reduce bandwidth by reducing the number of key/value pairs that must be shuffled across the network and delivered as input to the Reducer.
-
-Partitioner: Partitioner controls the partitioning of the keys of the intermediate map output in Hadoop. To determine partition, the hash function is employed. Each map output is partitioned based on the key-value pair. Each partition (inside each mapper) contains records with the same key value, and each partition is subsequently forwarded to a Reducer. Partition phase takes place in between mapper and reducer.
+**Partitioner:** Partitioner controls the partitioning of the keys of the intermediate map output in Hadoop. To determine partition, the hash function is employed. Each map output is partitioned based on the key-value pair. Each partition (inside each mapper) contains records with the same key value, and each partition is subsequently forwarded to a Reducer. Partition phase takes place in between mapper and reducer.
 The Hash Partitioner (Default Partitioner) computes a hash value for the key and assigns the partition based on it.
 
 I have used two custom partitioner logic
 MyCustomPartitioner logic1(For Task1, Task3, Task4): Based on the logs generated INFO relatively had higher log messages than ERROR/WARN/DEBUG so the log messages of INFO is sent to one reduce task and the other log messages are sent to the other reduce task
 MyCustomPartitioner logic2(For Task2): Here, partitioning is done based on the hours, 1-12 hour is sent to one reduce task and 13-24 for another reduce task
 
-Reducer :
+**Reducer:**
 In Hadoop MapReduce, a reducer condenses a set of intermediate values that share a key into a smaller set. Reducer takes a set of intermediate key-value pairs produced by the mapper as input in the MapReduce job execution flow. Reducer then aggregates, filters, and combines key-value pairs, which necessitates extensive processing.
 
-1) Task 1: To find the count of generated log messages with injected regex pattern for each message type in a predefined time interval.
+
+Firstly, the regex pattern is checked across the log entry for all four tasks. If it succeeds, it moves on to the job computation.
+Note : regex pattern is mentioned in the application.conf
+
+
+**1) Task 1:** To find the count of generated log messages with injected regex pattern for each message type in a predefined time interval.
 
 A predefined time interval is mentioned in the application.conf. Using this start and end time, the log messages with that injected regex pattern for every log message tag is counted.
 
@@ -183,7 +187,7 @@ Task1Reducer : (Key, Value) (key -> logMessageTag - [ERRO/INFO/WARN/DEBUG]) , (v
 
 Task1Partitioner : (Key, Value) (Key ->  logMessageTag - [ERRO/INFO/WARN/DEBUG]) , (value -> sum of the logMessage count, NumReduceTasks : 2)
 
-2) Task 2: To display the time intervals sorted in the descending order that contained most log messages of the type ERROR with injected regex pattern string instances. 
+**2) Task 2:** To display the time intervals sorted in the descending order that contained most log messages of the type ERROR with injected regex pattern string instances. 
 
 Every one hour is chosen as the time interval here. So, for every hour the ERROR tag injected regex pattern log messages is counted and displayed in descending order based on the count.
 
@@ -201,7 +205,7 @@ In Task2Reducer2, the sorted is done based on the key value sent by the Task2Map
 
 Task2Reducer2 : (Key, Value) (key -> Hour - [1..24]) , (value -> sum of the Error tag logMessage count)
 
-3) Task 3: To find the count of generated log messages for each message type.
+**3) Task 3:** To find the count of generated log messages for each message type.
 
 The log messages for every log message tag is counted
 
@@ -211,7 +215,7 @@ Task3Reducer : (Key, Value) (key -> logMessageTag - [ERRO/INFO/WARN/DEBUG]) , (v
 
 Task3Partitioner : (Key, Value) (Key -> logMessageTag - [ERRO/INFO/WARN/DEBUG]) , (value -> sum of the logMessage count, NumReduceTasks : 2)
 
-4) Task 4: To produce the number of characters in each log message for each log message type that contain the highest number of characters in the detected instances of the designated regex pattern.
+**4) Task 4:** To produce the number of characters in each log message for each log message type that contain the highest number of characters in the detected instances of the designated regex pattern.
 
 The max length of every injected regex pattern log message for every log message is displayed
 
