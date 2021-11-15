@@ -1,8 +1,0 @@
-[debug] > Exec(sbtassembly, None, None)
-[error] Not a valid command: sbtassembly
-[error] Not a valid project ID: sbtassembly
-[error] Expected ':'
-[error] Not a valid key: sbtassembly (similar: assembly, assemblyOption, assemblyJarName)
-[error] sbtassembly
-[error]            ^
-[debug] > Exec(idea-shell, None, None)
